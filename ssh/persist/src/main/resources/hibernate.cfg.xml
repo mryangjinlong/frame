@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!--  Database connection settings -->
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/long?serverTimezone=UTC</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">123456</property>
+
+        <!--  JDBC connection pool (use the built-in) -->
+       <!-- <property name="connection.pool_size">1</property>-->
+
+        <!--  SQL Dialect -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+        <!-- 显示sql语句 -->
+        <property name="hibernate.show_sql">true</property>
+        <!-- 格式化数据库语句-->
+        <property name="hibernate.format_sql">true</property>
+        <!--当前session上下文的class  就是getCurrentSession的时候session从哪里找   有以下选项
+            thread  线程 最常用
+            manage   需要手动管理事务的时候用这个  很少用
+            JTA  分布式事务时使用
+        -->
+        <property name="hibernate.current_session_context_class">thread</property>
+
+
+        <!--
+                自动更新或生成表
+                Setting to perform SchemaManagementTool actions automatically as part of the SessionFactory lifecycle.
+                Valid options are defined by the externalHbm2ddlName value of the org.hibernate.tool.schema.
+
+                none No action will be performed.
+                create-only Database creation will be generated.
+                drop Database dropping will be generated.
+                create Database dropping will be generated followed by database creation.
+                create-drop Drop the schema and recreate it on SessionFactory startup. Additionally, drop the schema on SessionFactory shutdown.
+                validate Validate the database schema
+                update Update the database schema
+        -->
+        <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
+
+        <!--==============================================================================缓存配置开始==============================================================================-->
+
+        <!--开启hibernate二级缓存  Default is true, although the default region factory is NoCachingRegionFactory-->
+        <!--<property name="hibernate.cache.use_second_level_cache">true</property>-->
+
+        <!-- 描述缓存提供商
+        <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+        -->
+        <!--开启查询缓存 打开后query才可以使用缓存 Enable or disable second level caching of query results. Default is false.-->
+        <!--<property name="hibernate.cache.use_query_cache">true</property>-->
+
+       <!-- <property name="hibernate.cache.query_cache_factory">org.hibernate.cache.spi.Query</property>-->
+
+        <!--
+            Query result caching is handled by a special contract that deals with staleness-based invalidation of the results.
+            The default implementation does not allow stale results at all. Use this for applications that would like to relax that.
+            Names an implementation of org.hibernate.cache.spi.QueryCacheFactory
+
+        <property name="hibernate.cache.query_cache_factory"></property>
+        -->
+        <!--
+        In Hibernate second-level caching, all regions can be configured differently
+        including the concurrency strategy to use when accessing that particular region.
+        This setting allows to define a default strategy to be used.
+        This setting is very rarely required as the pluggable providers do specify the default strategy to use. Valid values include:
+        read-only,
+        read-write,
+        nonstrict-read-write,
+        transactional
+        -->
+        <property name="hibernate.cache.default_cache_concurrency_strategy">transactional</property>
+
+
+
+
+        <!--==============================================================================缓存配置结束==============================================================================-->
+        <!--==============================================================事务控制======================================================================================-->
+        <!--事务隔离级别
+         * 一 事务并发可能会出现的问题
+         * 1.第一类丢失更新
+         * 2.脏读 读到了另一个事务没有提交的数据
+         * 3.不可重复读 同一个数据前后读两次是不一样的
+         * 4.第二类丢失更新
+         * 5. 幻读  数据前后读  多了一条数据
+         * 二 事务的隔离级别  事务级别越高效率越低  数据库中的  hibernate中都可以设置  如果hibernate不设那么就按数据库的级别
+         * 1. read-uncommitted   允许读取没有commit的数据  很少设      value = 1
+         * 2. read-commited     只有commit后才能读取   一般设成这项    value = 2
+         * 3. repeatable read    可重复读  在读的时候加把锁 当前事务没有结束。 其他事务不能修改此记录  value = 4
+         * 4. serializable       不要并发， 所有事务按顺序执行   一般不会设这个级别            value = 8
+         * 三 悲观锁 乐观锁  为了考虑并发效率，将级别隔离级别设置成read_commited  但这个时候会出现不可重复读的问题 所有使用悲观锁或乐观锁来解决这个问题
+            1.悲观锁  用数据库语句将要做更新的记录上一把锁
+            2.乐观锁  在程序中加锁 数据库加一个字段 version更新前先看version是否改变 如果改变则不更新   乐观锁效率比悲观锁高
+
+
+        -->
+        <property name="hibernate.connection.isolation">2</property>
+
+
+        <!--  Names the annotated entity class -->
+        <!--<mapping class="com.model.base.User" />
+        <mapping class="com.model.base.Company"/>
+        <mapping class="com.model.mapping.Husband"/>
+        <mapping class="com.model.mapping.Wife"/>
+        <mapping class="com.model.mapping.Student"/>
+        <mapping class="com.model.mapping.Teacher"/>
+        <mapping class="com.model.mapping.House"/>
+        <mapping class="com.model.mapping.Owner"/>
+        <mapping class="com.model.component_mapping.PersonCardMsg"/>
+        <mapping class="com.model.component_mapping.Person"/>
+        <mapping class="com.model.manyToOneMapping.Group"/>
+        <mapping class="com.model.manyToOneMapping.User"/>
+        <mapping class="com.model.oneToManyMapping.Enterprise"/>
+        <mapping class="com.model.oneToManyMapping.Employee"/>
+        <mapping class="com.model.oneToMangeDouble.Phone"/>
+        <mapping class="com.model.oneToMangeDouble.PhoneHander"/>
+        <mapping class="com.model.manyToManySingle.ClassA"/>
+        <mapping class="com.model.manyToManySingle.ClassB"/>
+        <mapping class="com.model.manyToManyMappingCRUD.ClassC" />
+        <mapping class="com.model.manyToManyMappingCRUD.ClassD" />
+        <mapping class="com.model.collections_mapping.ClassE"/>
+        <mapping class="com.model.collections_mapping.ClassF"/>
+        <mapping class="com.model.inheritanceMapping.Human"/>
+        <mapping class="com.model.inheritanceMapping.Driver"/>
+        <mapping class="com.model.inheritanceMapping.Builder"/>
+        <mapping class="com.model.ql_1.Msg"/>
+        <mapping class="com.model.ql_1.MsgInfo"/>
+        <mapping class="com.model.ql_1.Topic"/>
+        <mapping class="com.model.ql_1.Category"/>
+        -->
+        <mapping class="com.model.transaction1.Account"/>
+
+    </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.0" 
+		 xmlns="http://java.sun.com/xml/ns/javaee" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+		 >  
+  
+  <display-name>springMVC_Mybatis</display-name><!-- 没什么意义，可以直接删除掉。是servlet的描述性说明文字 -->
+  
+  <!-- ===========================不强制可以没有=========总上下文配置   以下（所有spring核心控制器的总配置）========================================================== -->
+	<!--   
+	  <context-param>
+  		<param-name>contextConfigLocation</param-name>
+  		<param-value> classpath:applicationContext.xml </param-value>
+	  </context-param>
+	  <listener>
+			<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	  </listener> 
+    -->
+  <!-- ==========================================总上正文配置   以上（所有spring核心控制器的总配置）======================================================================= -->
+
+    <!-- spring 解决POST乱码中文乱码的过滤器-->
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+  
+  <!-- ==========================================一个servlet 配置（这里是配置spring的核心控制器servlet） 每一个前置控制器都有自己的配置    以下 ====================================== -->
+     <!-- 每一个DispatcherServlet有自己的WebApplicationContext上下文对象。同时保存的ServletContext中和Request对象中 -->
+     <!-- 
+	    	如果没有<init-param>则 在DispatcherServlet的初始化过程中，框架会在web应用的 WEB-INF文件夹下寻找名为[servlet-name]-servlet.xml 的配置文件，生成文件中定义的bean
+	     	<servlet>  			   定义一个servlet
+	     	<servlet-name>       servlet的名称
+	     	<servlet-class>      servlet对应的类
+	     	<load-on-startup>
+		        1)load-on-startup元素标记容器是否在启动的时候就加载这个servlet(实例化并调用其init()方法)。                2)它的值必须是一个整数，表示servlet应该被载入的顺序
+				3)当值为0或者大于0时，表示容器在应用启动时就加载并初始化这个servlet； 							4)当值小于0或者没有指定时，则表示容器在该servlet被选择时才会去加载。
+				5)正数的值越小，该servlet的优先级越高，应用启动时就越先加载。 								6)当值相同时，容器就会自己选择顺序来加载。
+      -->
+    <servlet>
+        <servlet-name>springMvc</servlet-name>												
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	<!-- springMvc类 核心控制器-->
+        <load-on-startup>1</load-on-startup>
+        <init-param>																<!--  初始化参数  则如果没有默认值为  [servlet-name]-servlet.xml -->
+        	<param-name>contextConfigLocation</param-name>
+        	<param-value>
+				classpath:spring-mvc.xml
+				,
+				classpath:spring-mybatis.xml
+			</param-value>
+        </init-param>
+    </servlet>
+ 
+    <servlet-mapping>																		<!-- servlet Url 映射 -->
+        <servlet-name>springMvc</servlet-name>												<!-- 要映射的servlet 名称 -->
+        <url-pattern>*.html</url-pattern>													<!-- servlet 路径 -->
+     </servlet-mapping>
+  <!-- ==========================================一个servlet 配置    以上======================================================================= -->
+
+
+
+
+    <!-- 举个例子说明，假设用户在浏览器的地址框中输入http://www.mycompany.com/appName/等地址。如果在Web应用的部署描述符中没有指定welcome-file-list元素，
+        用户就会看到一个权限错误消息，或者是应用目录下的文件和目录列表。如果定义了welcome-file-list元素，用户就能看到由该元素指定的具体文件。welcome-file子元素用于指定默认文件的名称。
+        welcome-file-list元素可以包含一个或多个welcome-file子元素。如果在第一个welcome-file元素中没有找到指定的文件，Web容器就会尝试显示第二个，以此类推。 -->
+     <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+     </welcome-file-list>
+
+
+    <!-- 设置根目录 -->
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>webapp.root</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>/WEB-INF/classes/log4j.properties</param-value>
+    </context-param>
+    <!-- 3000表示 开一条watchdog线程每60秒扫描一下配置文件的变化;这样便于日志存放位置的改变 -->
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>3000</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
+</web-app>
+

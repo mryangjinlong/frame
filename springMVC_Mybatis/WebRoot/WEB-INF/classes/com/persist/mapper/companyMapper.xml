@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.model.Company">
+	<sql id="allColumns">
+		`id`,`loginName`
+	</sql>
+	
+	<sql id="allColumnsNoId">
+		`loginName`
+	</sql>
+	
+	<sql id="condition">
+		<where>
+			<if test="id != null">
+				AND `id` = #{id}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="selectPerson" parameterType="int" resultType="hashmap">
+	    select * from c_Company where id = #{id};
+	</select>
+	
+	<select id="selectOne" parameterType="int" resultMap="CompanyResult" >
+		select * from c_Company where id = #{id};
+	</select>
+	
+	<select id="selectDetail" parameterType="int" resultMap="detailResult" >
+		select 
+		A.id as id,
+		A.loginName as loginName,
+		B.loginName as employee_Name,
+		B.id as employee_id,
+		B.company_id as company_id
+		from c_Employee B
+       	left outer join c_Company A on B.company_id = A.id
+       	where B.id = #{id}
+	</select>
+	
+	<resultMap id="detailResult" type="com.model.Company">
+		  <constructor>
+		    <idArg column="id" javaType="long"/>
+		  </constructor>
+		  <result property="loginName" column="loginName"/>
+		<association property="employee" javaType="com.model.Employee">
+		    <id property="id" column="employee_id"/>
+		    <result property="companyId" column="company_id"/>
+		    <result property="loginName" column="employee_Name"/>
+		</association>
+	</resultMap>
+	
+	<resultMap id="CompanyResult" type="com.model.Company">
+		<id property="id" column="id"/>
+		<result	property="loginName" column="loginName" />				<!-- 登录用户名 -->
+		
+	</resultMap>
+</mapper>
