@@ -1,0 +1,15 @@
+package test;
+
+/**
+ * Created by Administrator on 2016/11/10.
+ */
+public class TestApplication {
+
+    public String exit(String str) {
+        System.out.print(str);
+        return "服务的处理完毕"+str;
+    }
+    public void b(){
+        System.out.print("bbbbbb");
+    }
+}

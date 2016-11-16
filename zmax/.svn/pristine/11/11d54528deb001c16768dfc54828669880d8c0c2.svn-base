@@ -1,0 +1,17 @@
+package com.zmaxfilm.service;
+
+import model.Print;
+
+import java.awt.print.Printable;
+
+/**
+ *
+ * Created by Administrator on 2016/11/14.
+ */
+public interface PrintService extends Printable {
+
+    void print(java.util.List<Print> prints, javax.print.PrintService printDevice);
+
+    //获取打印设备列表名称
+    javax.print.PrintService getPrintDeviceList(String deviceName);
+}

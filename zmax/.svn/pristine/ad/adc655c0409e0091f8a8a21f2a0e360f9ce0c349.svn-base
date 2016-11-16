@@ -1,0 +1,22 @@
+package com.zmax.ticket;
+
+
+import com.zmax.ticket.frame.BaseFrame;
+import com.zmax.ticket.util.FileUtils;
+import util.Inspiry532Utils;
+import util.InspiryDeviceAPIFor532;
+
+/**
+ * Created by Administrator on 2016/11/5.
+ */
+public class Main extends BaseFrame {
+
+    public static void main(String[] args) {
+        System.out.println(FileUtils.getAbsolutePath("dll_camera.dll"));
+//        System.out.println(InspiryDeviceAPIFor532.class.getResource("/").getPath()+"dll_camera.dll");
+        Inspiry532Utils.initInspiry532();
+        reigsterWindowsObject(new InterfaceForJavascript());
+        launch(args);
+		
+    }
+}

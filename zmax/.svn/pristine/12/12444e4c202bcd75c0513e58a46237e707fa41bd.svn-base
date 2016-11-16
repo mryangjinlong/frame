@@ -1,0 +1,36 @@
+package com.zmaxfilm.service.impl;
+
+import com.zmaxfilm.service.DeviceDetectionService;
+
+/**
+ * Created by jimmy on 2016/11/15.
+ */
+public class DeviceDetectionServiceImpl implements DeviceDetectionService{
+    @Override
+    public Boolean hasDll() {
+        return null;
+    }
+
+    @Override
+    public Boolean hasHtml() {
+        return null;
+    }
+
+    @Override
+    public void downloadDll() {
+
+    }
+
+    @Override
+    public void downloadHtml() {
+
+    }
+
+    @Override
+    public void checkAndFix() {
+        Boolean hasDll = hasDll();
+        Boolean hasHtml = hasHtml();
+        if(!hasDll) downloadDll();
+        if(!hasHtml) downloadHtml();
+    }
+}

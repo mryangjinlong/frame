@@ -1,0 +1,31 @@
+package com.zmaxfilm;
+
+import com.zmaxfilm.service.PrintService;
+import com.zmaxfilm.service.ScanService;
+import com.zmaxfilm.service.impl.PrintServiceImpl;
+import com.zmaxfilm.service.impl.ScannerServiceImpl;
+
+/**
+ * Created by Administrator on 2016/11/14.
+ */
+public class Factory {
+
+    //获取打印服务
+    public static PrintService getPrintService(int type){
+        switch (type){
+            case 0:
+                return new PrintServiceImpl();
+            default:return new PrintServiceImpl();
+        }
+    }
+
+    //获取二维码服务
+    public static ScanService getScanService(int type){
+        switch (type){
+            case 0:
+                return new ScannerServiceImpl();
+            default:return new ScannerServiceImpl();
+        }
+    }
+
+}

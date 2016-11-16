@@ -1,0 +1,18 @@
+package service;
+
+import model.Print;
+
+import java.awt.print.Printable;
+
+/**
+ * Created by Administrator on 2016/11/4.
+ */
+public interface PrintService  {
+
+
+    void print(java.util.List<Print> prints,javax.print.PrintService printDevice);
+
+    //获取打印设备列表名称
+    javax.print.PrintService getPrintDeviceList(String deviceName);
+
+}

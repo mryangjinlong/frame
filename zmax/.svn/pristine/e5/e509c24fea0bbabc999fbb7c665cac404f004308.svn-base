@@ -1,0 +1,67 @@
+package main;
+
+import com.sun.jna.ptr.IntByReference;
+import util.Inspiry532Utils;
+import util.InspiryDeviceAPIFor532;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * Created by Administrator on 2016/11/7.
+ */
+public class MySocketServer {
+
+    private int port = 8821;
+    private ServerSocket serverSocket;
+    private ExecutorService executorService;//线程池
+    private final int POOL_SIZE = 10;//单个CPU线程池大小
+
+
+    List<Socket> sockets=new ArrayList<Socket>();
+
+    public MySocketServer() throws IOException {
+        serverSocket = new ServerSocket(port);
+        //Runtime的availableProcessor()方法返回当前系统的CPU数目.
+        executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * POOL_SIZE);
+        System.out.println("服务器启动");
+    }
+
+    public void service() {
+        while (true) {
+            Socket socket = null;
+            try {
+                //接收客户连接,只要客户进行了连接,就会触发accept();从而建立连接
+                socket = serverSocket.accept();
+
+                System.out.print(socket.getInetAddress()+"已连接");
+                executorService.execute(new ReceiveHandler(socket));
+                sockets.add(socket);
+
+                while (true){
+                    byte Decodes[] = new byte[512];
+                    IntByReference lengthRe = new IntByReference();
+                    InspiryDeviceAPIFor532.INSTANCE.GetDecodeString(Decodes,lengthRe);
+                    String decodeString = new String(Decodes,0,lengthRe.getValue()) ;
+                    if(lengthRe.getValue()>0){
+                        for(Socket s:sockets){
+                            System.out.println("发送二维码数据...");
+                            executorService.execute(new Handler(s,decodeString));
+                            Inspiry532Utils.sleepNotifyEngine();
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

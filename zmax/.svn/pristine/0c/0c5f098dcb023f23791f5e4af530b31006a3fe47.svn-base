@@ -1,0 +1,65 @@
+package main;
+
+import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import netscape.javascript.JSObject;
+import test.TestApplication;
+import util.GetClassPath;
+import util.Inspiry532Utils;
+
+import java.io.IOException;
+
+
+/**
+ * Created by Administrator on 2016/11/5.
+ */
+public class Main extends Application {
+    public static TestApplication t=new TestApplication();
+
+
+
+    public static void main(String args[]) throws IOException {
+        Inspiry532Utils.initInspiry532();
+        launch(args);
+//        new MySocketServer().service();
+    }
+
+
+
+    @Override
+    public void start(Stage primaryStage) {
+        init(primaryStage);
+//        primaryStage.initStyle(StageStyle.UNDECORATED);
+//        primaryStage.setAlwaysOnTop(true);
+//        primaryStage.setMaximized(true);
+        primaryStage.show();
+    }
+    private void  init(Stage primaryStage) {
+        final Stage stage = primaryStage;
+        Group group = new Group();//作为根节点，也就是root
+        primaryStage.setScene(new Scene(group));
+        WebView webView = new WebView();
+        final WebEngine engine = webView.getEngine();
+        engine.load(Main.class.getResource("/web/index.html").toString());
+        engine.getLoadWorker().stateProperty().addListener((ObservableValue<? extends Worker.State> p, Worker.State oldState, Worker.State newState) -> {
+                    if (newState == Worker.State.SUCCEEDED) {
+                        JSObject win = (JSObject) engine.executeScript("window"); // 获取js对象
+                        win.setMember("app", t); // 然后把应用程序对象设置成为js对象
+                    }
+                }
+        );
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll( webView);
+        VBox.setVgrow(webView, Priority.ALWAYS);
+        group.getChildren().add(vBox);
+    }
+}

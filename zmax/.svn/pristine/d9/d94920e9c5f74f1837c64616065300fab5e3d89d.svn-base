@@ -1,0 +1,11 @@
+package com.zmaxfilm;
+
+/**
+ * Created by Administrator on 2016/11/12.
+ */
+public class Constant {
+    //首页url
+    public static String INDEX_URL = "web/index.html";
+    public static String FRAME_XML_PATH = "frame/frame.fxml";
+
+}

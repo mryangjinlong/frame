@@ -1,0 +1,71 @@
+package main;
+
+import model.Print;
+import service.impl.PrintServiceImpl;
+
+import javax.print.DocFlavor;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import java.awt.*;
+import java.io.*;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2016/11/7.
+ */
+public class ReceiveHandler implements Runnable{
+
+    private Socket socket;
+
+    public ReceiveHandler(Socket socket){
+        this.socket=socket;
+    }
+    private PrintWriter getWriter(Socket socket) throws IOException {
+        OutputStream socketOut=socket.getOutputStream();
+        return new PrintWriter(socketOut,true);
+    }
+    private BufferedReader getReader(Socket socket) throws IOException{
+        InputStream socketIn=socket.getInputStream();
+        return new BufferedReader(new InputStreamReader(socketIn));
+    }
+    public void run(){
+        try {
+            System.out.print("................");
+            BufferedReader br=getReader(socket);
+            String msg = null;
+
+            PrintServiceImpl printService=new PrintServiceImpl();
+
+            while (true){
+                while ((msg = br.readLine()) != null)
+                    if(msg.equals("1print")){
+                        List<Print> prints=new ArrayList<Print>();
+                        Print print=new Print();
+                        print.setContent("hhhh");
+                        print.setX(50);
+                        print.setY(10);
+                        print.setFont(Font.PLAIN);
+                        print.setSize(14);
+                        prints.add(print);
+                        printService.print(prints,printService.getPrintDeviceList("POS80"));
+                    }else if(msg.equals("2print")){
+                        List<Print> prints=new ArrayList<Print>();
+                        Print print=new Print();
+                        print.setContent("hhhh");
+                        print.setX(50);
+                        print.setY(10);
+                        print.setFont(Font.PLAIN);
+                        print.setSize(14);
+                        prints.add(print);
+                        printService.print(prints,printService.getPrintDeviceList("POS80_2"));
+                    }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
